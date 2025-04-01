@@ -3,18 +3,19 @@ import styles from './ReportSummary.module.css';
 export default function ReportSummary({ data }) {
   const extractMetrics = (analysis) => {
     const metrics = [];
-    const abnormalPattern = /(\w+)\s*:\s*([\d.]+)\s*\(([↑↓])/g;
+    // Simple pattern to match test name, value, and status
+    const rowPattern = /^\|([^\|]+)\|([^\|]+)\|[^\|]+\|\s*(↑|↓)\s*(High|Low)/gm;
     let match;
     
-    while ((match = abnormalPattern.exec(analysis)) !== null) {
+    while ((match = rowPattern.exec(analysis)) !== null) {
       metrics.push({
-        name: match[1],
-        value: match[2],
+        name: match[1].trim(),
+        value: match[2].trim(),
         status: match[3] === '↑' ? 'high' : 'low'
       });
     }
     
-    return metrics.slice(0, 5);
+    return metrics.slice(0, 5); // Return top 5 abnormalities
   };
 
   const metrics = extractMetrics(data.analysis);
@@ -23,6 +24,7 @@ export default function ReportSummary({ data }) {
     <div className={styles.summaryContainer}>
       <div className={styles.summaryHeader}>
         <h3>Key Findings</h3>
+        <p className={styles.subtitle}>Top Abnormal Results</p>
       </div>
       
       <div className={styles.metricsContainer}>
@@ -34,13 +36,14 @@ export default function ReportSummary({ data }) {
                   {metric.status === 'high' ? '↑' : '↓'}
                 </span>
                 <span className={styles.metricText}>
-                  <span className={styles.metricName}>{metric.name}:</span> {metric.value}
+                  <span className={styles.metricName}>{metric.name}:</span> 
+                  <span className={styles.metricValue}>{metric.value}</span>
                 </span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className={styles.noAbnormalities}>No abnormalities detected</p>
+          <p className={styles.noAbnormalities}>No abnormal results found</p>
         )}
       </div>
     </div>

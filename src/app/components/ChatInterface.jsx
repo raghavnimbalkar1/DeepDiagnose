@@ -6,6 +6,20 @@ export default function ChatInterface({ reportContext, chatHistory, setChatHisto
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Function to render text with bold formatting
+  const renderWithBold = (text) => {
+    const parts = text.split('**');
+    return parts.map((part, index) => {
+      return index % 2 === 1 ? (
+        <span key={index} className={styles.boldText}>
+          {part}
+        </span>
+      ) : (
+        part
+      );
+    });
+  };
+
   const handleSend = async () => {
     if (!message.trim() || isLoading) return;
     
@@ -26,10 +40,16 @@ export default function ChatInterface({ reportContext, chatHistory, setChatHisto
       if (!res.ok) throw new Error('Failed to get response');
       
       const data = await res.json();
-      setChatHistory(prev => [...prev, { role: 'assistant', content: data.response }]);
+      setChatHistory(prev => [...prev, { 
+        role: 'assistant', 
+        content: data.response 
+      }]);
     } catch (error) {
       console.error('Chat error:', error);
-      setChatHistory(prev => [...prev, { role: 'assistant', content: 'Error: ' + error.message }]);
+      setChatHistory(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'Sorry, I encountered an error: ' + error.message 
+      }]);
     } finally {
       setIsLoading(false);
       setMessage('');
@@ -37,41 +57,59 @@ export default function ChatInterface({ reportContext, chatHistory, setChatHisto
   };
 
   return (
-    <div className={styles.chatContainer}>
-      <div className={styles.chatHeader}>
-        <h3>Ask About This Report</h3>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h3>Report Analysis Assistant</h3>
       </div>
       
-      <div className={styles.chatContent}>
-        <div className={styles.messagesContainer}>
-          {chatHistory.map((msg, i) => (
+      <div className={styles.messages}>
+        {chatHistory.length > 0 ? (
+          chatHistory.map((msg, i) => (
             <div 
               key={i} 
-              className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.aiMessage}`}
+              className={`${styles.message} ${
+                msg.role === 'user' ? styles.userMessage : styles.aiMessage
+              }`}
             >
-              <p className={styles.messageRole}>{msg.role === 'user' ? 'You:' : 'Doctor AI:'}</p>
-              <p className={styles.messageText}>{msg.content}</p>
+              <div className={styles.role}>
+                {msg.role === 'user' ? 'You' : 'Doctor AI'}
+              </div>
+              <div className={styles.text}>
+                {msg.content.split('\n').map((paragraph, idx) => (
+                  <p key={idx}>{renderWithBold(paragraph)}</p>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
+          ))
+        ) : (
+          <div className={styles.welcomeMessage}>
+            <p>Ask me anything about this medical report.</p>
+            <p>I can explain findings, suggest next steps, or clarify terminology.</p>
+          </div>
+        )}
+      </div>
         
-        <div className={styles.inputContainer}>
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Ask about any findings..."
-            className={styles.messageInput}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-          />
-          <button
-            onClick={handleSend}
-            disabled={isLoading || !message.trim()}
-            className={`${styles.sendButton} ${(isLoading || !message.trim()) ? styles.disabledButton : ''}`}
-          >
-            {isLoading ? 'Sending...' : 'Send'}
-          </button>
-        </div>
+      <div className={styles.inputContainer}>
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Example: What does the elevated CRP level mean?"
+          className={styles.input}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          disabled={isLoading}
+        />
+        <button
+          onClick={handleSend}
+          disabled={isLoading || !message.trim()}
+          className={styles.button}
+        >
+          {isLoading ? (
+            <span className={styles.spinner}></span>
+          ) : (
+            <span>Send</span>
+          )}
+        </button>
       </div>
     </div>
   );

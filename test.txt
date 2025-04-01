@@ -98,6 +98,7 @@ Primary Care Physician: Dr. Sarah Williams, MD
 - **Abdominal Ultrasound**: Mild hepatomegaly (16 cm), fatty liver changes
 - **Echocardiogram**: EF 55%, mild left ventricular hypertrophy
 - **DEXA Scan**: T-score -1.8 (Osteopenia)
+- Cancer stage 3 found
 
 ## Physician Assessment
 1. **Type 2 Diabetes Mellitus** - Poorly controlled (HbA1c 6.8%)

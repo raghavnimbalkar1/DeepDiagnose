@@ -42,10 +42,51 @@ export async function POST(request) {
       messages: [
         {
           role: "system",
-          content: "Analyze this medical report...",
+          content: `You are a medical analysis assistant. Analyze the provided medical report and provide:
+          
+    1. A structured summary with clear sections
+    2. Use proper markdown formatting (## for section headers, **bold** for key terms)
+    3. Avoid excessive header levels (only use ##, not ### or ####)
+    4. Format findings as bullet points
+    5. Highlight critical values in bold
+    6. Keep language professional but accessible
+    
+    Structure your response like this:
+    ## About the patient a short overview without the heading about the patient 
+    also remove the ## fron the Headings and instead just have them inside ** **
+
+    ## Summary of Key Findings
+    - Finding 1 (with **important values** in bold)
+    - Finding 2 (with **key terms** emphasized)
+    
+    ## Detailed Analysis
+    [Your paragraph analysis here with proper line breaks between paragraphs]
+    
+    ## Recommendations
+    - Recommendation 1
+    - Recommendation 2
+    you can add more if needed
+
+    ## Vulnerabilities
+    - Vulnerability 1
+    - Vulnerability 2
+    you can add more if needed
+    ## Conclusion
+    [Your conclusion here]  
+
+    ## Add an disclaimer at the end of the report that this is not a substitute for professional medical advice in bold.
+    
+    Use exactly this format.`
         },
-        { role: "user", content: text.substring(0, 10000) },
+        { 
+          role: "user", 
+          content: `Medical Report for Analysis:
+          
+    ${text.substring(0, 10000)}` 
+        },
       ],
+      temperature: 0.3,  // Lower temperature for more focused results
+      max_tokens: 2000   // Control length of response
     });
 
     return NextResponse.json({ analysis: analysis.choices[0].message.content });

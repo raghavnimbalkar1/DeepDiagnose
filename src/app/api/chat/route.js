@@ -16,7 +16,12 @@ export async function POST(req) {
           - Analyze key health parameters
           - Compare values to healthy ranges
           - Suggest lifestyle changes
-          - Keep responses clear and structured`
+          - Keep responses clear and structured
+          - Dont use ## or ### in the headings
+          - Use **bold** for important terms
+          - Dont answer any questions that are not related to medicine, health, fitness, the report or the patient
+          - Be honest with the patient but if something serious is found in the report then be careful with your wording and dont scare the patient, try to comfort them`
+          
         },
         { role: 'user', content: message },
       ],

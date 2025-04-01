@@ -1,15 +1,19 @@
+/* MedicalAnalysis.module.css */
+
 .container {
     background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.05);
     padding: 2rem;
-    margin-bottom: 2rem;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin: 2rem 0;
+    border: 1px solid rgba(226, 232, 240, 0.7);
+    position: relative;
+    overflow: hidden;
   }
   
   .header {
-    border-bottom: 1px solid var(--gray-light);
-    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    padding-bottom: 1rem;
     margin-bottom: 1.5rem;
   }
   
@@ -18,48 +22,92 @@
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--dark);
+    margin: 0;
+  }
+  
+  .subtitle {
+    font-family: var(--font-main);
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
   }
   
   .content {
-    line-height: 1.7;
-  }
-  
-  .paragraph {
-    margin-bottom: 1rem;
-    font-size: 1rem;
+    font-family: var(--font-main);
     color: var(--dark);
+    line-height: 1.6;
+    font-size: 0.9375rem; /* 15px */
   }
   
-  .highlight {
-    background-color: #fef3c7;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-  }
-  
-  .abnormalValue {
-    color: var(--danger);
-    font-weight: 600;
-  }
-  
-  .normalValue {
-    color: var(--secondary);
-    font-weight: 600;
-  }
-  
-  .sectionTitle {
+  /* Markdown Heading (###) */
+  .markdownHeading {
     font-family: var(--font-heading);
-    font-size: 1.125rem;
+    font-size: 1.125rem; /* 18px */
     font-weight: 600;
     color: var(--dark);
-    margin: 1.5rem 0 1rem;
-    padding-bottom: 0.5rem;
+    margin: 1.5rem 0 0.75rem 0;
+    padding-bottom: 0.25rem;
     border-bottom: 1px solid var(--gray-light);
   }
   
-  .recommendation {
-    background-color: #f0fdf4;
-    padding: 1rem;
-    border-left: 4px solid var(--secondary);
-    border-radius: 0 4px 4px 0;
-    margin: 1rem 0;
+  /* Markdown Bold (**text**) */
+  .markdownBold {
+    font-weight: 600;
+    color: var(--dark);
+    /* Remove blue color and background */
   }
+  
+  /* Regular paragraphs */
+  .paragraph {
+    margin-bottom: 1rem;
+    color: var(--dark);
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.6;
+  }
+  
+  /* Remove bullet points from paragraphs */
+  .paragraph::before {
+    content: none;
+  }
+  
+  /* Lists */
+  .content ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .content li {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Section styling */
+  .section {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Key findings highlights */
+  .keyFinding {
+    font-weight: 600;
+    color: var(--primary-dark);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .container {
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+    
+    .header h3 {
+      font-size: 1.125rem;
+    }
+    
+    .content, .paragraph {
+      font-size: 0.875rem; /* 14px */
+    }
+    
+    .markdownHeading {
+      font-size: 1rem;
+    }
+  }
+  

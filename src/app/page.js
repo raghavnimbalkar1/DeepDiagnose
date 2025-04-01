@@ -15,7 +15,13 @@ export default function MedicalReportAnalyzer() {
     <div className="app-container">
       <header className="header">
         <div className="header-content">
-          <h1 className="title">Medical Report Analyzer</h1>
+          <div className="logo-container">
+            <h1 className="logo">
+              <span className="logo-deep">Deep</span>
+              <span className="logo-diagnose">Diagnose</span>
+            </h1>
+            <div className="logo-tagline">AI-Powered Medical Analysis</div>
+          </div>
         </div>
       </header>
 
