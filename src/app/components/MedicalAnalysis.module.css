@@ -1,0 +1,65 @@
+.container {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .header {
+    border-bottom: 1px solid var(--gray-light);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+  
+  .content {
+    line-height: 1.7;
+  }
+  
+  .paragraph {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: var(--dark);
+  }
+  
+  .highlight {
+    background-color: #fef3c7;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+  }
+  
+  .abnormalValue {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  
+  .normalValue {
+    color: var(--secondary);
+    font-weight: 600;
+  }
+  
+  .sectionTitle {
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--gray-light);
+  }
+  
+  .recommendation {
+    background-color: #f0fdf4;
+    padding: 1rem;
+    border-left: 4px solid var(--secondary);
+    border-radius: 0 4px 4px 0;
+    margin: 1rem 0;
+  }

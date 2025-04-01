@@ -1,58 +1,60 @@
 import { NextResponse } from "next/server";
 import { OpenAI } from "openai";
-import pdf from "pdf-parse";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function POST(req) {
+export const config = {
+  api: {
+    bodyParser: false, // Required for file uploads
+  },
+};
+
+export async function POST(request) {
+  // First verify content type
+  const contentType = request.headers.get("content-type");
+  if (!contentType || !contentType.includes("multipart/form-data")) {
+    return NextResponse.json(
+      { error: "Invalid content type. Expected multipart/form-data" },
+      { status: 400 }
+    );
+  }
+
   try {
-    const formData = await req.formData();
+    const formData = await request.formData();
     const file = formData.get("file");
 
     if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No file uploaded" },
+        { status: 400 }
+      );
     }
 
-    // Convert PDF file to buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // Process the file (example for text files)
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const text = buffer.toString("utf-8");
 
-    // Extract text from PDF
-    const pdfData = await pdf(buffer);
-    const text = pdfData.text.trim(); // Trim extra spaces
+    // For PDFs, you would use:
+    // const { text } = await import('pdf-parse').then(m => m.default(buffer));
 
-    if (!text || text.length < 10) {
-      return NextResponse.json({ error: "PDF has no readable text" }, { status: 400 });
-    }
-
-    // Send extracted text to OpenAI
-    const response = await openai.chat.completions.create({
+    const analysis = await openai.chat.completions.create({
       model: "gpt-4-turbo",
       messages: [
-        { 
-          role: "system", 
-          content: `You are a medical AI. Analyze the following doctor's report:
-            - Extract key health indicators (e.g., hemoglobin, cholesterol, sugar levels).
-            - Indicate if values are above, below, or within the normal range.
-            - Provide recommendations for improvement.
-            - Keep it structured and easy to understand.`
+        {
+          role: "system",
+          content: "Analyze this medical report...",
         },
-        { role: "user", content: text },
+        { role: "user", content: text.substring(0, 10000) },
       ],
     });
 
-    // Ensure response is valid
-    if (!response || !response.choices || response.choices.length === 0) {
-      return NextResponse.json({ error: "OpenAI did not return a valid response" }, { status: 500 });
-    }
-
-    return NextResponse.json({ analysis: response.choices[0].message.content });
+    return NextResponse.json({ analysis: analysis.choices[0].message.content });
 
   } catch (error) {
-    console.error("Error processing file:", error);
-
-    return NextResponse.json({ 
-      error: "Server error: " + (error.message || "Unknown error") 
-    }, { status: 500 });
+    console.error("Server error:", error);
+    return NextResponse.json(
+      { error: error.message || "Analysis failed" },
+      { status: 500 }
+    );
   }
 }

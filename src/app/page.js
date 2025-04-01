@@ -1,81 +1,71 @@
 "use client";
-import { useState } from "react";
+import { useState } from 'react';
+import FileUploader from './components/FileUploader';
+import MedicalAnalysis from './components/MedicalAnalysis';
+import ChatInterface from './components/ChatInterface';
+import ReportSummary from './components/ReportSummary';
+import './globals.css';
 
-export default function Home() {
-  const [file, setFile] = useState(null);
-  const [analysis, setAnalysis] = useState('');
-  const [message, setMessage] = useState('');
-  const [chatResponse, setChatResponse] = useState('');
-
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a file!");
-      return;
-    }
-  
-    const formData = new FormData();
-    formData.append("file", file);
-  
-    try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-  
-      // Handle non-JSON responses (HTML errors)
-      if (!res.ok) {
-        const errorText = await res.text(); // Try reading error message
-        throw new Error(errorText);
-      }
-  
-      const data = await res.json(); // Convert response to JSON
-  
-      if (data.error) {
-        alert("Error: " + data.error);
-      } else {
-        setAnalysis(data.analysis);
-      }
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert("Something went wrong: " + error.message);
-    }
-  };
-  
-  const handleChat = async () => {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
-    });
-
-    const data = await res.json();
-    setChatResponse(data.response);
-  };
+export default function MedicalReportAnalyzer() {
+  const [reportData, setReportData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [chatHistory, setChatHistory] = useState([]);
 
   return (
-    <div className="container">
-      <h1>Medical Chatbot</h1>
+    <div className="app-container">
+      <header className="header">
+        <div className="header-content">
+          <h1 className="title">Medical Report Analyzer</h1>
+        </div>
+      </header>
 
-      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-      <button onClick={handleUpload}>Upload Report</button>
+      <main className="main-content">
+        <div className="grid-container">
+          {/* Left Column */}
+          <div>
+            <FileUploader 
+              onUploadStart={() => setIsLoading(true)}
+              onUploadSuccess={(data) => {
+                setReportData(data);
+                setIsLoading(false);
+              }}
+              onUploadError={(error) => {
+                console.error(error);
+                setIsLoading(false);
+              }}
+            />
+            
+            {reportData && (
+              <ReportSummary data={reportData} />
+            )}
+          </div>
 
-      <div className="output">
-        <h2>Analysis</h2>
-        <pre>{analysis}</pre>
-      </div>
-
-      <input
-        type="text"
-        placeholder="Ask anything..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button onClick={handleChat}>Send</button>
-
-      <div className="chat-response">
-        <h2>Response</h2>
-        <p>{chatResponse}</p>
-      </div>
+          {/* Right Column */}
+          <div className="space-y">
+            {reportData ? (
+              <>
+                <MedicalAnalysis analysis={reportData.analysis} />
+                <ChatInterface 
+                  reportContext={reportData.analysis}
+                  chatHistory={chatHistory}
+                  setChatHistory={setChatHistory}
+                />
+              </>
+            ) : (
+              <div className="card text-center">
+                <h3 className="subtitle">
+                  {isLoading ? 'Analyzing your report...' : 'Upload a medical report to begin'}
+                </h3>
+                {isLoading && (
+                  <div className="flex-center" style={{ marginTop: '1rem' }}>
+                    <div className="spinner"></div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
