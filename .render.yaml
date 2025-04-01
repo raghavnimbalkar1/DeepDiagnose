@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: your-nextjs-app
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    staticAssets:
+      - path: .next/static
+        mimeTypes:
+          .js: application/javascript
+          .css: text/css
+    envVars:
+      - key: NODE_ENV
+        value: production
